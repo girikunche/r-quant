@@ -33,4 +33,11 @@ portfolioReturns<-na.omit(Return.calculate(portfolioPrices))
 #Basic Stats for each ticker
 ReturnStats<-table.Stats(portfolioReturns)
 
+#Plot chart of Correlation between securities
+#Distribution of each variable is shown on the diagonal
+#Top of diagonal has the value of coorelation plus the significance level as stars
+chart.Correlation(portfolioReturns)
+
+
+
 
