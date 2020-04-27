@@ -28,9 +28,7 @@ colSums(is.na(portfolioPrices))
 #ROC funtion calculates daily changes for individual columns
 portfolioReturns<-na.omit(Return.calculate(portfolioPrices))
 
-#Arithmetic Mean
-arithMean<-Mean.arithmetic(portfolioReturns)
-geoMean<-mean.geometric(portfolioReturns)
-sdev<-StdDev(portfolioReturns)
+#Basis Stats for each ticket
+ReturnStats<-table.Stats(portfolioReturns)
 
 
