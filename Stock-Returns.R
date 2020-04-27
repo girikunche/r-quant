@@ -3,19 +3,21 @@ library(PerformanceAnalytics)
 
 #Start Date
 dt<-"2010-04-01"
+
+#End Date
 tilldate<-"2020-03-01"
 
-#tickers<-c("FB","AAPL","AMZN","NFLX")
+#List of Stocks or ETF's for Analysis
 tickers<-c("VEA","EEM","VWO","TIP","SHV","IGOV","GSG","DJP","VNQ","EFA")
 
 
 #Assign PortfolioProces to Null
 portfolioPrices<-NULL
 
-#Get data from Yahoo Finance
+#Get data from Yahoo Finance, Ticker by Ticker
 for (ticker in tickers){
   
-  #Combine all columens from getSymbols, add to portfolioPrices
+  #Combine all columns from getSymbols, add to portfolioPrices
   #Take the adjusted closing price - Column 6
   portfolioPrices<-cbind(portfolioPrices,getSymbols.yahoo(ticker,from=dt,to=tilldate,periodicity='monthly',auto.assign=FALSE)[,6])
 }
@@ -28,7 +30,7 @@ colSums(is.na(portfolioPrices))
 #ROC funtion calculates daily changes for individual columns
 portfolioReturns<-na.omit(Return.calculate(portfolioPrices))
 
-#Basis Stats for each ticket
+#Basic Stats for each ticker
 ReturnStats<-table.Stats(portfolioReturns)
 
 
