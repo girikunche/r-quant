@@ -9,7 +9,7 @@ require(ROI.plugin.quadprog)
 #Start Date
 dt<-"2010-04-01"
 #End Date
-tilldate<-"2020-03-01"
+tilldate<-"2020-04-01"
 
 #List of Stocks or ETF's for Analysis
 tickers<-c("VEA","EEM","VWO","TIP","SHV","IGOV","GSG","DJP","VNQ","EFA")
