@@ -9,7 +9,7 @@ require(ROI.plugin.quadprog)
 #Start Date
 dt<-"2010-04-01"
 #End Date
-tilldate<-"2020-04-01"
+tilldate<-"2020-03-02"
 
 #List of Stocks or ETF's for Analysis
 tickers<-c("VEA","EEM","VWO","TIP","SHV","IGOV","GSG","DJP","VNQ","EFA")
@@ -69,7 +69,7 @@ colSums(is.na(benchmarkPrices))
 benchmarkReturns<-na.omit(Return.calculate(benchmarkPrices))
 
 #Calculate beta's for each security against benchmark, considering risk free rate Rf
-beta_measure<-CAPM.beta(portfolioReturns,benchmarkReturns,Rf=irx/118)
+beta_measure<-CAPM.beta(portfolioReturns,benchmarkReturns,Rf=irx/1200)
 #Display Beta's
 print(beta_measure)
 
