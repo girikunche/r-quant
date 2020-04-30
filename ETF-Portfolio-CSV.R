@@ -2,6 +2,7 @@
 library(xts)
 library(quantmod)
 library(PerformanceAnalytics)
+library(PortfolioAnalytics)
 
 #Initialize Portfolio Object
 library(ROI)
