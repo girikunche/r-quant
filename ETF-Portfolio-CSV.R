@@ -17,7 +17,6 @@ tilldate<-"2020-04-01"
 #13 Week US Bonds Ticker to get the Risk Free Rate
 treasury<-("^IRX")
 
-
 read_prices<-read.csv("ETF.csv",header=TRUE,stringsAsFactors = FALSE)
 #Correct Columns
 names(read_prices)<-c("Date","VEA","EEM","VWO","TIP","SHV","IGOV","GSG","DJP","VNQ","EFA")
@@ -34,6 +33,19 @@ colnames(sec_prices)=c("VEA","EEM","VWO","TIP","SHV","IGOV","GSG","DJP","VNQ","E
 #calculate Returns for portfolio. Remove NA's using na.omit
 sec_returns<-na.omit(Return.calculate(sec_prices))
 
+#Print Basic Statistics for each security
+sec_returns_stats<-subset(t(table.Stats(sec_returns)),select=c("Arithmetic Mean","Geometric Mean","Median","Variance","Stdev"))
+print(sec_returns_stats)
+
+
+#Covariance between ETF's
+sec_covariance<-cov(sec_returns)
+print(sec_covariance)
+
+#Correlation between ETF's
+sec_correlation<-cor(sec_returns)
+print(sec_correlation)
+
 #Plot chart of Correlation between securities
 #Distribution of each variable is shown on the diagonal
 #Top of diagonal has the value of coorelation plus the significance level as stars
@@ -43,7 +55,7 @@ chart.Correlation(sec_returns)
 benchmarkPrices<-getSymbols.yahoo('^GSPC',from=dt,to=tilldate,periodicity='monthly',auto.assign=FALSE)[,6]
 
 #create a benchmark to compare tickers. Compare with Dow Jones Index
-djia<-getSymbols.yahoo("^DJI",from="2010-05-01",to="2020-04-01",periodicity='monthly',auto.assign=FALSE)[,6]
+djia<-getSymbols.yahoo("^DJI",from=dt,to=tilldate,periodicity='monthly',auto.assign=FALSE)[,6]
 
 #check if there is any missing data
 colSums(is.na(benchmarkPrices))
@@ -62,6 +74,7 @@ beta_measure_vs_djia<-CAPM.beta(sec_returns,djia_returns,Rf=irx/1190)
 
 #Display Beta's
 print(beta_measure_vs_sp500)
+print(beta_measure_vs_djia)
 
 #Print Regression Chart
 #Takes A Set Of Returns And Relates Them To A Market Benchmark In A Scatterplot
@@ -80,5 +93,16 @@ portf<-add.objective(portf,type="return",name="mean")
 portf<-add.objective(portf,type="risk",name="StdDev")
 
 #Optimize using ROI method
-optPort <- optimize.portfolio(sec_returns, portf, optimize_method = "ROI", trace=TRUE)
+#optPort <- optimize.portfolio(sec_returns, portf, optimize_method = "ROI", trace=TRUE)
+meanvar.ef<-create.EfficientFrontier(R=sec_returns,portfolio=portf,type="mean-StdDev")
+summary(meanvar.ef, digits=2)
+meanvar.ef$frontier
+
+chart.EfficientFrontier(meanvar.ef, match.col="StdDev", type="l", RAR.text="Sharpe Ratio", pch=4)
+chart.EfficientFrontier(meanvar.ef, match.col="StdDev", type="b", rf=0)
+
+
+
+
+
 
