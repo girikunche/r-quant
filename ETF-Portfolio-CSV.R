@@ -1,5 +1,6 @@
 #Script to Read Security data from CSV file and calculate Beta
 library(xts)
+library(zoo)
 library(quantmod)
 library(PerformanceAnalytics)
 library(PortfolioAnalytics)
@@ -35,16 +36,16 @@ sec_returns<-na.omit(Return.calculate(sec_prices))
 
 #Print Basic Statistics for each security
 sec_returns_stats<-subset(t(table.Stats(sec_returns)),select=c("Arithmetic Mean","Geometric Mean","Median","Variance","Stdev"))
-print(sec_returns_stats)
+print(sec_returns_stats,digits=2)
 
 
 #Covariance between ETF's
 sec_covariance<-cov(sec_returns)
-print(sec_covariance)
+print(sec_covariance,digits=2)
 
 #Correlation between ETF's
 sec_correlation<-cor(sec_returns)
-print(sec_correlation)
+print(sec_correlation,digits=2)
 
 #Plot chart of Correlation between securities
 #Distribution of each variable is shown on the diagonal
@@ -73,8 +74,8 @@ beta_measure_vs_sp500<-CAPM.beta(sec_returns,benchmarkReturns,Rf=irx/1190)
 beta_measure_vs_djia<-CAPM.beta(sec_returns,djia_returns,Rf=irx/1190)
 
 #Display Beta's
-print(beta_measure_vs_sp500)
-print(beta_measure_vs_djia)
+print(beta_measure_vs_sp500,digits=2)
+print(beta_measure_vs_djia,digits=2)
 
 #Print Regression Chart
 #Takes A Set Of Returns And Relates Them To A Market Benchmark In A Scatterplot
@@ -93,16 +94,19 @@ portf<-add.objective(portf,type="return",name="mean")
 portf<-add.objective(portf,type="risk",name="StdDev")
 
 #Optimize using ROI method
-#optPort <- optimize.portfolio(sec_returns, portf, optimize_method = "ROI", trace=TRUE)
+optPort <- optimize.portfolio(sec_returns, portf, optimize_method = "ROI",trace=TRUE)
+
+#Generate the efficient frontier for a mean-variance portfolio
+#First argument is asset returns. Second argument is portfolio
 meanvar.ef<-create.EfficientFrontier(R=sec_returns,portfolio=portf,type="mean-StdDev")
+
+#Risk and return metrics along the efficient frontier
 summary(meanvar.ef, digits=2)
 meanvar.ef$frontier
 
-chart.EfficientFrontier(meanvar.ef, match.col="StdDev", type="l", RAR.text="Sharpe Ratio", pch=4)
-chart.EfficientFrontier(meanvar.ef, match.col="StdDev", type="b", rf=0)
-
-
-
+#Plot Efficient Frontier of the portfolio, rf=0
+chart.EfficientFrontier(meanvar.ef, match.col="StdDev",type="b", 
+                        rf=0,main="Efficient Frontier",element.color="blue")
 
 
 
